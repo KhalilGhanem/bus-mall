@@ -1,0 +1,14 @@
+img{
+    width: 300px;
+    height: 300px;
+    display: inline-block;
+}
+ul{
+    display: inline-block;
+}
+h1,h2{
+    text-align: center;
+}
+div{
+    margin: 0 auto;
+}
