@@ -9,6 +9,8 @@ let maxClicks=25;
 let leftIndex;
 let midIndex;
 let rightIndex;
+let compairArray=[];
+let productNamesArray=[];
 
 function Product(name,source){
   this.name=name;
@@ -16,6 +18,7 @@ function Product(name,source){
   this.shown=0;
   this.clicked=0;
   Product.imageArr.push(this);
+  productNamesArray.push(this.name);
 }
 
 Product.imageArr=[];
@@ -45,29 +48,50 @@ function renderImages(){
   leftIndex=randomIndex();
   midIndex=randomIndex();
   rightIndex=randomIndex();
+  /*
+  console.log(Product.imageArr[leftIndex].source);
+  console.log(compairArray);
+  console.log(compairArray.includes(Product.imageArr[leftIndex].source));
+  */
 
+  console.log('first ' + compairArray.includes(Product.imageArr[leftIndex].source));
+  console.log('sec '+ compairArray.includes(Product.imageArr[midIndex].source));
+  console.log('last '+compairArray.includes(Product.imageArr[rightIndex].source));
+  /*
+  if(compairArray.includes(Product.imageArr[leftIndex].source)){
+    leftIndex=randomIndex();
+  }
+  if(compairArray.includes(Product.imageArr[midIndex].source)){
+    midIndex=randomIndex();
+  }
+  if(compairArray.includes(Product.imageArr[rightIndex].source)){
+    rightIndex=randomIndex();
+  }
+  */
+  if(compairArray.includes(Product.imageArr[leftIndex].source) || compairArray.includes(Product.imageArr[midIndex].source) || compairArray.includes(Product.imageArr[rightIndex].source)){
+    leftIndex=randomIndex();
+    midIndex=randomIndex();
+    rightIndex=randomIndex();
+  }
   while(leftIndex===midIndex || midIndex===rightIndex || leftIndex===rightIndex){
     midIndex=randomIndex();
     rightIndex=randomIndex();
   }
-  /*
-  while(leftIndex===midIndex || midIndex===rightIndex ){
-    console.log(`life ${leftIndex} mid ${midIndex} right ${rightIndex}`);
-    midIndex=randomIndex();
-    if(leftIndex===rightIndex && rightIndex !== midIndex){
-      rightIndex=randomIndex();
-    }
-  }
-  */
-  Product.imageArr[leftIndex].shown++;
-  Product.imageArr[midIndex].shown++;
-  Product.imageArr[rightIndex].shown++;
 
   leftImageElement.src= Product.imageArr[leftIndex].source;
-  midImageElement.src= Product.imageArr[midIndex].source;
-  rightImageElement.src= Product.imageArr[rightIndex].source;
+  compairArray[0]=Product.imageArr[leftIndex].source;
+  Product.imageArr[leftIndex].shown++;
 
+  midImageElement.src= Product.imageArr[midIndex].source;
+  compairArray[1]=Product.imageArr[midIndex].source;
+  Product.imageArr[midIndex].shown++;
+
+  rightImageElement.src= Product.imageArr[rightIndex].source;
+  compairArray[2]=Product.imageArr[rightIndex].source;
+  Product.imageArr[rightIndex].shown++;
+  console.log(compairArray);
 }
+
 
 
 function randomIndex(){
@@ -94,12 +118,11 @@ function handleClick(event){
       count--;
     }
     renderImages();
+
   }else{
     containerSection.removeEventListener('click',handleClick);
     resultsButtonElement.addEventListener('click',handleButton);
-
     handleButton();
-
   }
 
 }
@@ -109,16 +132,99 @@ function handleClick(event){
 function handleButton(event){
   if(event.target.id ==='resultsButton'){
     renderList();
+    makeChart();
     resultsButtonElement.removeEventListener('click',handleButton);
 
   }
 }
-
+let arrOfVotes=[];
+let arrOfShown=[];
 function renderList(){
   let ul=document.getElementById('fisrtList');
   for(let i=0;i<Product.imageArr.length;i++){
+    arrOfVotes.push(Product.imageArr[i].clicked);
+    arrOfShown.push(Product.imageArr[i].shown);
     let li = document.createElement('li');
     ul.appendChild(li);
     li.textContent= `${Product.imageArr[i].name} had ${Product.imageArr[i].clicked} votes, and was seen ${Product.imageArr[i].shown} times `;
   }
 }
+
+function makeChart(){
+  let ctx = document.getElementById('myChart');
+  let myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: productNamesArray,
+      datasets: [{
+        label: '# of Votes',
+        data: arrOfVotes,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      },{
+        label: '# of Shown',
+        data: arrOfShown,
+        backgroundColor: [
+          'rgba(200, 200, 200, 0.2)',
+          'rgba(0, 255, 0, 0.2)',
+          'rgba(60, 179, 113, 0.2)',
+          'rgba(65, 105, 225, 0.2)',
+          'rgba(255,0,255, 0.2)',
+          'rgba(0, 255, 255, 0.2)'
+        ],
+        borderColor: [
+          'rgba(200, 200, 200, 1)',
+          'rgba(0, 255, 0, 1)',
+          'rgba(60, 179, 113, 1)',
+          'rgba(65, 105, 225, 1)',
+          'rgba(255,0,255, 1)',
+          'rgba(0, 255, 255, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+  });
+}
+
+
+/*
+function makechart(){
+  let ctx = document.getElementById('myChart');
+  let myChart = new Chart(ctx, { // its an instance
+    type: 'bar',
+    data: {
+      labels: productNamesArray, // ['goat away' ,  ... 'sassy goat']
+      datasets: [{
+        label: 'Number Of votes',
+        data: arrOfVotes,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+        ],
+        borderWidth: 1
+      },{
+        label:'# of Shown',
+        data: arrOfShown,
+        backgroundColor:[
+          'rgb(192,192,192)'
+        ],
+        borderWidth: 1
+      }]
+    }
+  });
+}
+*/
