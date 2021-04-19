@@ -3,6 +3,7 @@ let leftImageElement=document.getElementById('left-image');
 let midImageElement=document.getElementById('mid-image');
 let rightImageElement=document.getElementById('right-image');
 let resultsButtonElement=document.getElementById('resultsButton');
+let containerSection=document.getElementById('contSec');
 let count=0;
 let maxClicks=25;
 let leftIndex;
@@ -45,6 +46,11 @@ function renderImages(){
   midIndex=randomIndex();
   rightIndex=randomIndex();
 
+  while(leftIndex===midIndex || midIndex===rightIndex || leftIndex===rightIndex){
+    midIndex=randomIndex();
+    rightIndex=randomIndex();
+  }
+  /*
   while(leftIndex===midIndex || midIndex===rightIndex ){
     console.log(`life ${leftIndex} mid ${midIndex} right ${rightIndex}`);
     midIndex=randomIndex();
@@ -52,6 +58,7 @@ function renderImages(){
       rightIndex=randomIndex();
     }
   }
+  */
   Product.imageArr[leftIndex].shown++;
   Product.imageArr[midIndex].shown++;
   Product.imageArr[rightIndex].shown++;
@@ -71,10 +78,7 @@ function randomIndex(){
 
 renderImages();
 
-leftImageElement.addEventListener('click',handleClick);
-midImageElement.addEventListener('click',handleClick);
-rightImageElement.addEventListener('click',handleClick);
-resultsButtonElement.addEventListener('click',handleButton);
+containerSection.addEventListener('click',handleClick);
 
 function handleClick(event){
   count++;
@@ -83,21 +87,30 @@ function handleClick(event){
       Product.imageArr[leftIndex].clicked++;
     }else if(event.target.id ==='mid-image'){
       Product.imageArr[midIndex].clicked++;
-    }else{
+    }else if(event.target.id ==='right-image'){
       Product.imageArr[rightIndex].clicked++;
+    }else{
+      alert('please select an image');
+      count--;
     }
     renderImages();
   }else{
+    containerSection.removeEventListener('click',handleClick);
+    resultsButtonElement.addEventListener('click',handleButton);
+
     handleButton();
+
   }
+
 }
+
+
 
 function handleButton(event){
   if(event.target.id ==='resultsButton'){
     renderList();
-    leftImageElement.removeEventListener('click',handleClick);
-    midImageElement.removeEventListener('click',handleClick);
-    rightImageElement.removeEventListener('click',handleClick);
+    resultsButtonElement.removeEventListener('click',handleButton);
+
   }
 }
 
