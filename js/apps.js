@@ -44,50 +44,41 @@ new Product('water-can','images/water-can.jpg');
 new Product('wine-glass','images/wine-glass.jpg');
 console.log(Product.imageArr);
 
+
+function checkIndex(index, arr){
+  for(let i = 0 ; i <arr.length; i++){
+    if(index === arr[i]){
+      return true;
+    }
+  } return false;
+}
+
+
 function renderImages(){
   leftIndex=randomIndex();
   midIndex=randomIndex();
   rightIndex=randomIndex();
-  /*
-  console.log(Product.imageArr[leftIndex].source);
-  console.log(compairArray);
-  console.log(compairArray.includes(Product.imageArr[leftIndex].source));
-  */
 
   console.log('first ' + compairArray.includes(Product.imageArr[leftIndex].source));
   console.log('sec '+ compairArray.includes(Product.imageArr[midIndex].source));
   console.log('last '+compairArray.includes(Product.imageArr[rightIndex].source));
-  /*
-  if(compairArray.includes(Product.imageArr[leftIndex].source)){
-    leftIndex=randomIndex();
-  }
-  if(compairArray.includes(Product.imageArr[midIndex].source)){
-    midIndex=randomIndex();
-  }
-  if(compairArray.includes(Product.imageArr[rightIndex].source)){
-    rightIndex=randomIndex();
-  }
-  */
-  if(compairArray.includes(Product.imageArr[leftIndex].source) || compairArray.includes(Product.imageArr[midIndex].source) || compairArray.includes(Product.imageArr[rightIndex].source)){
-    leftIndex=randomIndex();
-    midIndex=randomIndex();
-    rightIndex=randomIndex();
-  }
-  while(leftIndex===midIndex || midIndex===rightIndex || leftIndex===rightIndex){
-    midIndex=randomIndex();
-    rightIndex=randomIndex();
+
+
+  while(leftIndex === rightIndex || leftIndex === midIndex || midIndex === rightIndex || compairArray.includes(leftIndex) || compairArray.includes(midIndex) || checkIndex(rightIndex,compairArray)){
+    rightIndex = randomIndex();
+    midIndex = randomIndex();
+    leftIndex = randomIndex();
   }
 
+  compairArray = [leftIndex,midIndex,rightIndex];
+
   leftImageElement.src= Product.imageArr[leftIndex].source;
-  compairArray[0]=Product.imageArr[leftIndex].source;
   Product.imageArr[leftIndex].shown++;
 
   midImageElement.src= Product.imageArr[midIndex].source;
-  compairArray[1]=Product.imageArr[midIndex].source;
   Product.imageArr[midIndex].shown++;
 
   rightImageElement.src= Product.imageArr[rightIndex].source;
-  compairArray[2]=Product.imageArr[rightIndex].source;
   Product.imageArr[rightIndex].shown++;
   console.log(compairArray);
 }
