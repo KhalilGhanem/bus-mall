@@ -19,6 +19,7 @@ function Product(name,source){
   this.clicked=0;
   Product.imageArr.push(this);
   productNamesArray.push(this.name);
+  // saveToLs();
 }
 
 Product.imageArr=[];
@@ -44,6 +45,10 @@ new Product('water-can','images/water-can.jpg');
 new Product('wine-glass','images/wine-glass.jpg');
 console.log(Product.imageArr);
 
+function saveToLs(){
+  let arrayOfStrring = JSON.stringify(Product.imageArr);
+  localStorage.setItem('ProductSaved', arrayOfStrring);
+}
 
 function checkIndex(index, arr){
   for(let i = 0 ; i <arr.length; i++){
@@ -51,6 +56,15 @@ function checkIndex(index, arr){
       return true;
     }
   } return false;
+}
+
+function gettingLsData(){
+  let data = localStorage.getItem('ProductSaved');
+  let lsdata = JSON.parse(data);
+  if(lsdata){
+    Product.imageArr=lsdata;
+    renderList();
+  }
 }
 
 
@@ -96,6 +110,7 @@ renderImages();
 containerSection.addEventListener('click',handleClick);
 
 function handleClick(event){
+  renderList();
   count++;
   if(maxClicks>=count){
     if(event.target.id ==='left-image'){
@@ -104,12 +119,15 @@ function handleClick(event){
       Product.imageArr[midIndex].clicked++;
     }else if(event.target.id ==='right-image'){
       Product.imageArr[rightIndex].clicked++;
+    // }else if(event.target.id ==='resultsButton'){
+    //   gettingLsData();
     }else{
       alert('please select an image');
       count--;
     }
     renderImages();
-
+    // Product.saveToLs=saveToLs();
+    saveToLs();
   }else{
     containerSection.removeEventListener('click',handleClick);
     resultsButtonElement.addEventListener('click',handleButton);
@@ -132,6 +150,7 @@ let arrOfVotes=[];
 let arrOfShown=[];
 function renderList(){
   let ul=document.getElementById('fisrtList');
+  ul.innerHTML='';
   for(let i=0;i<Product.imageArr.length;i++){
     arrOfVotes.push(Product.imageArr[i].clicked);
     arrOfShown.push(Product.imageArr[i].shown);
@@ -219,3 +238,4 @@ function makechart(){
   });
 }
 */
+gettingLsData();
